@@ -15,8 +15,11 @@ Module.register("MMM-doomsDay", {
         toWhat: "Leaving for Paris!",
         singular: "Day Left ",
         plural: "Days Left",
+        singularW: "Week",
+        pluralW: "Weeks",
         present: "Let's Fly!",
-        timesUp: "death and despair, your time is up."
+        timesUp: "death and despair, your time is up.",
+        showWeeks: false
     },
 
     // Define start sequence.
@@ -45,11 +48,14 @@ Module.register("MMM-doomsDay", {
         var now = new Date();
         var timeparser = Date.parse(doomsDay) - Date.parse(now);
         daysLeft = Math.floor(timeparser/(1000*60*60*24));
+        weeksLeft = Math.floor(timeparser/(1000*60*60*24*7));
 
         var wrapper = document.createElement("div");
         var headerD = document.createElement("span");
         headerD.innerHTML = this.config.toWhat + "</br>";
         headerD.className = "doooom";
+        
+        var weeksLeftText = ""; // pre-set to an empty value. This will be changed only if required as per conditions below.
 
         if (daysLeft == 0) {
             var timeLeft = document.createElement("span")
@@ -63,8 +69,14 @@ Module.register("MMM-doomsDay", {
           timeLeft.className = "timeLeft";
           }
         else if (daysLeft >= 2) {
+            if (weeksLeft == 1 && this.config.showWeeks) { // if there's 1 week left and option is enabled (true)
+                weeksLeftText = " (" + weeksLeft + " " + this.config.singularW + ")";
+            }
+            else if (weeksLeft > 1 && this.config.showWeeks) { // if there's more than 1 week left and option is enabled (true)
+                weeksLeftText = " (" + weeksLeft + " " + this.config.pluralW + ")";
+            }
             var timeLeft = document.createElement("span");
-            timeLeft.innerHTML = daysLeft + " " + this.config.plural;
+            timeLeft.innerHTML = daysLeft + " " + this.config.plural + weeksLeftText; // this will always output daysLeft and weeksLeftText, but weeksLeftText may be blank if not required or enabled
             timeLeft.className = "timeLeft";
           }
 
